@@ -5,13 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
+  const Register({Key key}) : super(key: key);
+
   @override
   _RegisterState createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
-        //================== Building the alert Dialog======
-  Future<void> _alertDialogBuilder( String error) async {
+  //================== Building the alert Dialog======
+  Future<void> _alertDialogBuilder(String error) async {
     return showDialog(
         //==========prevents closing the error when tapping any part of the screen
         barrierDismissible: false,
@@ -22,9 +24,10 @@ class _RegisterState extends State<Register> {
             // ignore: avoid_unnecessary_containers
             content: Container(
               // adding the String *error* value to the text
-              child:  Text(error),
+              child: Text(error),
             ),
             actions: [
+              // ignore: deprecated_member_use
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -36,46 +39,35 @@ class _RegisterState extends State<Register> {
         });
   }
 
-      //================== Creating new User Account.========
+  //================== Creating new User Account.========
   Future<String> _createAccount() async {
-
-    try{
-      await FirebaseAuth.instance.createUserWithEmailAndPassword
-        (email: _registerEmail, password: _registerPassword);
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _registerEmail, password: _registerPassword);
       return null;
-    }
-    on FirebaseAuthException catch (e)
-    {
-
-      if (e . code == 'Weak password')
-      {
-        return'the password provided is too weak';
-      }
-      else if (e.code == 'Email already in use')
-      {
-        return'the account is already in use';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'Weak password') {
+        return 'the password provided is too weak';
+      } else if (e.code == 'Email already in use') {
+        return 'the account is already in use';
       }
       return e.message;
-      }
-
-      catch (e)
-    {
+    } catch (e) {
       return e.toString();
     }
-    }
+  }
 
-    //=====================  Submit Form ================
+  //=============N========  Submit Form ================
 
-  void _submitForm() async{
+  void _submitForm() async {
     //==== setting the loading state
     setState(() {
       //================  displaying the circularProgressBar ================
       _registerFormLoading = true;
     });
     //create account feedback was created to provide error feedBacks
-    String _createAccountFeedBack = await  _createAccount();
-    if( _createAccountFeedBack != null)
-    {
+    String _createAccountFeedBack = await _createAccount();
+    if (_createAccountFeedBack != null) {
       _alertDialogBuilder(_createAccountFeedBack);
       //===============Closing the CircularProgressBar=========
       setState(() {
@@ -83,12 +75,13 @@ class _RegisterState extends State<Register> {
       });
     }
   }
-            // implementing the circular loader.
+
+  // implementing the circular loader.
   bool _registerFormLoading = false;
 
   // Creating Texts input fields to accept the values
   String _registerEmail = '';
-  String  _registerPassword = '';
+  String _registerPassword = '';
 
   //===============Creating a FocusNode for the Input Fields Start==========
   FocusNode _passwordFocusNode;
@@ -97,7 +90,7 @@ class _RegisterState extends State<Register> {
   @override
   void initState() {
     _passwordFocusNode = FocusNode();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -117,76 +110,85 @@ class _RegisterState extends State<Register> {
       //=============top and bottom of device screen======
       body: SafeArea(
         // ignore: sized_box_for_whitespace
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 28.0),
-                child: Text(
-                  'Create your account',
-                  textAlign: TextAlign.center,
-                  style: Constant.boldHeading,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 28.0),
+                  child: Text(
+                    'Create your account',
+                    textAlign: TextAlign.center,
+                    style: Constant.boldHeading,
+                  ),
                 ),
-              ),
-              //===========custom button created in the widget folder========
-              Column(
-                children: [
-                  //==================Email Text Field=============
-                  CustomInput(
-                    hintText: 'Email ...',
+                //===========custom button created in the widget folder========
 
-                    onChanged: (value) {
-                      _registerEmail = value;
-                    },
+                const SizedBox(
+                  height: 200,
+                ),
+                Column(
+                  children: [
+                    //==================Email Text Field=============
+                    CustomInput(
+                      hintText: 'Email ...',
 
-                    //=======On press enter the focus should move to the password field.======//
-                    onSubmitted: (value) {
-                      _passwordFocusNode.requestFocus();
-                    },
-                    //========== Changes the enter button to next button on the keyboard.========
-                    textInputAction: TextInputAction.next,
-                  ),
+                      onChanged: (value) {
+                        _registerEmail = value;
+                      },
 
-                  //================Password Text Field=============
+                      //=======On press enter the focus should move to the password field.======//
+                      onSubmitted: (value) {
+                        _passwordFocusNode.requestFocus();
+                      },
+                      //========== Changes the enter button to next button on the keyboard.========
+                      textInputAction: TextInputAction.next,
+                    ),
 
-                  CustomInput(
-                    //receiving the value from the textField
-                    onChanged: (value) {
-                      _registerPassword = value;
-                    },
-                    focusNode: _passwordFocusNode,
-                    isPasswordField: true,
-                    hintText: 'Password ...',
-//======== THis Submits the form ======================
-                    onSubmitted:(value) {
-                      _submitForm();
-                    },
-                  ),
+                    //================Password Text Field=============
 
-                  // Register Button
-                  CustomButton(
-                    text: 'Register',
-                    onPressed: () {
-                      _submitForm();
-                    },
-                    //Displaying the circular progress bar
-                    isLoading: _registerFormLoading,
-                  ),
-                ],
-              ),
+                    CustomInput(
+                      //receiving the value from the textField
+                      onChanged: (value) {
+                        _registerPassword = value;
+                      },
+                      focusNode: _passwordFocusNode,
+                      isPasswordField: true,
+                      hintText: 'Password ...',
+                      //======== THis Submits the form ======================
+                      onSubmitted: (value) {
+                        _submitForm();
+                      },
+                    ),
 
-              //Login Account Button fix
-              CustomButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                text: 'Login',
-                //setting the outline button to true. so to be transparent
-                outlineBtn: true,
-              ),
-            ],
+                    // Register Button
+                    CustomButton(
+                      text: 'Register',
+                      onPressed: () {
+                        _submitForm();
+                        // Navigator.pushReplacement(context,
+                        //     MaterialPageRoute(builder: (context) => Login()));
+                      },
+                      //Displaying the circular progress bar
+                      isLoading: _registerFormLoading,
+                    ),
+                  ],
+                ),
+
+                //Login Account Button fix
+                CustomButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  text: 'Login',
+                  //setting the outline button to true. so to be transparent
+                  outlineBtn: true,
+                ),
+              ],
+            ),
           ),
         ),
       ),

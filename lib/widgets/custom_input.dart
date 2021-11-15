@@ -19,6 +19,7 @@ class CustomInput extends StatelessWidget {
   //====== to obscure the password text
   final bool isPasswordField;
 
+  // ignore: use_key_in_widget_constructors
   const CustomInput(
       {this.hintText,
       this.onChanged,

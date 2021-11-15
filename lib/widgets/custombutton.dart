@@ -1,17 +1,17 @@
-import 'package:e_commerce/Constants/textstyle_constant.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-   // ignore: use_key_in_widget_constructors
-   const CustomButton({this.text, this.outlineBtn, this.isLoading, this.onPressed});
+  // ignore: use_key_in_widget_constructors
+  const CustomButton(
+      {this.text, this.outlineBtn, this.isLoading, this.onPressed});
 
-   //created for easy initialization.
+  //created for easy initialization.
 
-  final String  text;
+  final String text;
   final Function onPressed;
-  final bool  outlineBtn;
+  final bool outlineBtn;
   // is loading is a boolean  for the circularprogressbar.
-   final bool  isLoading;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -34,38 +34,34 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(13),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: Stack(
-          children: [
-            //  visibility widget to control the display of the text
-       Visibility(
-         visible: _isLoading ? false : true,
-         child: Center(
-           child: Text(
-             // text is null display Text
-            text ?? 'Text',
-              style: TextStyle(
-                fontSize: 16.0,
-                // if the outline button is true color should be black,
-                // if false colour should be white
-                color: _outlineBtn ? Colors.black : Colors.white,
+        child: Stack(children: [
+          //  visibility widget to control the display of the text
+          Visibility(
+            visible: _isLoading ? false : true,
+            child: Center(
+              child: Text(
+                // text is null display Text
+                text ?? 'Text',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  // if the outline button is true color should be black,
+                  // if false colour should be white
+                  color: _outlineBtn ? Colors.black : Colors.white,
+                ),
               ),
             ),
-         ),
-       ),
+          ),
 
-           Visibility(
-             //  visibility widget to control the display of the CircularProgressIndicator
-             // displaying circle progress indicator
-             visible: _isLoading,
-             child: const Center(
-               child:  SizedBox(
-                    height: 30,
-                    width: 30,
-                    child:CircularProgressIndicator()),
-             ),
-           ),
-  ]
-      ),
+          Visibility(
+            //  visibility widget to control the display of the CircularProgressIndicator
+            // displaying circle progress indicator
+            visible: _isLoading,
+            child: const Center(
+              child: SizedBox(
+                  height: 30, width: 30, child: CircularProgressIndicator()),
+            ),
+          ),
+        ]),
       ),
     );
   }

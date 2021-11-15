@@ -1,15 +1,14 @@
-import 'package:e_commerce/Constants/textstyle_constant.dart';
 import 'package:e_commerce/tabs/search_tab.dart';
 import 'package:e_commerce/tabs/homepage_tab.dart';
 import 'package:e_commerce/tabs/saved_tab.dart';
 import 'package:e_commerce/widgets/bottom_tabs.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Homepage extends StatefulWidget {
+  const Homepage({Key key}) : super(key: key);
+
   @override
   _HomepageState createState() => _HomepageState();
-
 }
 
 class _HomepageState extends State<Homepage> {
@@ -18,14 +17,16 @@ class _HomepageState extends State<Homepage> {
 
   @override
   void initState() {
-   _tabsPageController = PageController();
+    _tabsPageController = PageController();
     super.initState();
   }
- @override
+
+  @override
   void dispose() {
     _tabsPageController;
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,42 +34,35 @@ class _HomepageState extends State<Homepage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Expanded(
+            child: PageView(
+              controller: _tabsPageController,
+              // ignore: avoid_types_as_parameter_names
+              onPageChanged: (num) {
+                _selectTab = num;
+              },
+              children: [
+                //Navigation Tabs
 
-          Container(
-            child: Expanded(
-              child: PageView(
-                controller: _tabsPageController,
-                onPageChanged:(num){
-                    _selectTab = num;
-                } ,
-                children: [
-                  //Navigation Tabs
+                HomeTab(),
 
-                 HomeTab(),
+                const Search_tab(),
 
-                  Search_tab(),
-
-                 SavedTab( ),
-
-                ],
-              ),
-            )
-
+                SavedTab(),
+              ],
+            ),
           ),
-
-
-         BottomTabs  (
+          BottomTabs(
             selectedTab: _selectTab,
 
-
-           tabPressed: (num){
-
-              _tabsPageController.animateToPage
-                (num, duration: Duration(milliseconds: 300), curve: Curves.easeOutCubic);
-
-           },
+            // ignore: avoid_types_as_parameter_names
+            tabPressed: (num) {
+              _tabsPageController.animateToPage(num,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic);
+            },
           ),
-         ],
+        ],
       ),
     ));
   }

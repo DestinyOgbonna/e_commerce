@@ -13,7 +13,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  FirebaseServices _firebaseServices = FirebaseServices();
+  final FirebaseServices _firebaseServices = FirebaseServices();
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +58,8 @@ class _CartPageState extends State<CartPage> {
                             builder: (context, productSnap) {
 //checking Errors
                               if (productSnap.hasError) {
-                                return Container(
-                                  child: Center(
-                                    child: Text('${productSnap.error}'),
-                                  ),
+                                return Center(
+                                  child: Text('${productSnap.error}'),
                                 );
                               }
 
@@ -70,14 +68,14 @@ class _CartPageState extends State<CartPage> {
                                 // map to pupolate the container
                                 Map _productMap = productSnap.data.data();
                                 return Padding(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 16.0,
                                     horizontal: 19.0,
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Container(
+                                      SizedBox(
                                         width: 90,
                                         height: 90,
                                         child: ClipRRect(
@@ -90,28 +88,39 @@ class _CartPageState extends State<CartPage> {
                                           ),
                                         ),
                                       ),
-
                                       Container(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                           left: 16.0,
                                         ),
                                         child: Column(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Text('${_productMap['name']}', style: TextStyle(
-                                                fontSize: 18, color: Theme.of(context).accentColor,
-                                                fontWeight: FontWeight.w600)
-                                            ),
+                                            Text('${_productMap['name']}',
+                                                style: TextStyle(
+                                                    // ignore: deprecated_member_use
+                                                    fontSize: 18,
+                                                    color: Theme.of(context)
+                                                        .accentColor,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
                                             Padding(
-                                              padding: EdgeInsets.symmetric(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
                                                 vertical: 4.0,
                                               ),
-                                              child:  Text('\$${_productMap['Price']}' ??'Product Price', style: TextStyle(
-                                                fontSize: 18, color: Theme.of(context).accentColor,
-                                                fontWeight: FontWeight.w600,
-                                              )),
+                                              child: Text(
+                                                  '\$${_productMap['Price']}' ??
+                                                      'Product Price',
+                                                  style: TextStyle(
+                                                    // ignore: deprecated_member_use
+                                                    fontSize: 18,
+                                                    color: Theme.of(context)
+                                                        .accentColor,
+                                                    fontWeight: FontWeight.w600,
+                                                  )),
                                             ),
                                             // Text('Size - ${document.data.data()['Size']}', style: const TextStyle(
                                             //   fontSize: 16, color:Colors.black,
@@ -121,25 +130,20 @@ class _CartPageState extends State<CartPage> {
                                           ],
                                         ),
                                       )
-
                                     ],
                                   ),
                                 );
                               }
 
-                              return Container(
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
+                              return const Center(
+                                child: CircularProgressIndicator(),
                               );
-                            }
-                            ),
+                            }),
                       );
-                    }).toList()
-                );
+                    }).toList());
               }
 
-              return  Scaffold(
+              return const Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),
                 ),

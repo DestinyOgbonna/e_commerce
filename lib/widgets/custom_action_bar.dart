@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/Constants/textstyle_constant.dart';
 import 'package:e_commerce/Screens/cart_page.dart';
 import 'package:e_commerce/services/FirebaseAuth_Services/firebase_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CustomActionBar extends StatelessWidget {
   // for displaying the back Arrow
   final bool hasBackArrow;
@@ -15,7 +15,7 @@ class CustomActionBar extends StatelessWidget {
   final String title;
   final bool hasTitle;
 
-   CustomActionBar(
+  CustomActionBar(
       {Key key,
       this.hasBackArrow,
       this.title,
@@ -23,13 +23,12 @@ class CustomActionBar extends StatelessWidget {
       this.hasBackground})
       : super(key: key);
 
-
   //getting the user id. from the firebase_services Package
-  FirebaseServices _firebaseServices = FirebaseServices();
+  final FirebaseServices _firebaseServices = FirebaseServices();
 
   // a new reference for adding to cart indicator
   final CollectionReference _usersRef =
-  FirebaseFirestore.instance.collection('Users');
+      FirebaseFirestore.instance.collection('Users');
 
   //================  Getting the User(Another Option)===========
   // User _user = FirebaseAuth.instance.currentUser;
@@ -43,9 +42,6 @@ class CustomActionBar extends StatelessWidget {
     bool _hasTitle = hasTitle ?? true;
 
     bool _hasBackground = hasBackground ?? true;
-
-
-
 
     return Container(
       decoration: BoxDecoration(
@@ -100,9 +96,9 @@ class CustomActionBar extends StatelessWidget {
             ),
           // Add to cart indicator
           GestureDetector(
-            onTap: ()
-            {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const CartPage()));
             },
             child: Container(
                 width: 43,
@@ -114,26 +110,25 @@ class CustomActionBar extends StatelessWidget {
                 alignment: Alignment.center,
                 child: StreamBuilder(
                     // stream: _usersRef.doc(_user.uid), when using Users _user
-                    stream: _usersRef.doc(_firebaseServices.getUserId())
+                    stream: _usersRef
+                        .doc(_firebaseServices.getUserId())
                         .collection('Cart')
                         .snapshots(),
                     builder: (context, snapshot) {
                       // to display the number of items in the cart
                       int _totalItems = 0;
 
-                      if(snapshot.connectionState == ConnectionState.active){
+                      if (snapshot.connectionState == ConnectionState.active) {
                         //getting the list-Length of items in the cart
                         List _documents = snapshot.data.docs;
                         _totalItems = _documents.length;
-
                       }
-                  return
-                 Text( '$_totalItems'?? '0',
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white));
-                })),
+                      return Text('$_totalItems' ?? '0',
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white));
+                    })),
           ),
         ],
       ),

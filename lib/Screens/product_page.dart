@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/Constants/textstyle_constant.dart';
 import 'package:e_commerce/services/FirebaseAuth_Services/firebase_services.dart';
 import 'package:e_commerce/widgets/custom_action_bar.dart';
 import 'package:e_commerce/widgets/image_swipe.dart';
 import 'package:e_commerce/widgets/product_size.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +20,7 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   //getting the user id. from the firebase_services Package
-  FirebaseServices _firebaseServices = FirebaseServices();
+  final FirebaseServices _firebaseServices = FirebaseServices();
 
   //to send the selectedSIze to database
   String _selectedProductSize = '0';
@@ -68,8 +66,9 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   //a snackBar to notify the user that products have been added to cart
-  final SnackBar _snackbar = SnackBar(content: Text('Added to cart'));
-  final SnackBar _snackbars = SnackBar(content: Text('Added to Favourite'));
+  final SnackBar _snackbar = const SnackBar(content: Text('Added to cart'));
+  final SnackBar _snackbars =
+      const SnackBar(content: Text('Added to Favourite'));
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +101,7 @@ class _ProductPageState extends State<ProductPage> {
                 _selectedProductSize = sizeList[0];
 
                 return ListView(
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   children: [
                     // the product slider
                     ImageSwipe(
@@ -120,6 +119,7 @@ class _ProductPageState extends State<ProductPage> {
                       child: Text('${documentData['Price']}' ?? 'Product Price',
                           style: TextStyle(
                             fontSize: 18,
+                            // ignore: deprecated_member_use
                             color: Theme.of(context).accentColor,
                             fontWeight: FontWeight.w600,
                           )),
@@ -152,10 +152,11 @@ class _ProductPageState extends State<ProductPage> {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap:() async{
+                            onTap: () async {
                               await _addtoSaved();
+                              // ignore: deprecated_member_use
                               Scaffold.of(context).showSnackBar(_snackbars);
-                          },
+                            },
                             child: Container(
                               width: 60,
                               height: 60,
@@ -176,6 +177,7 @@ class _ProductPageState extends State<ProductPage> {
                             child: GestureDetector(
                               onTap: () async {
                                 await _addtoCart();
+                                // ignore: deprecated_member_use
                                 Scaffold.of(context).showSnackBar(_snackbar);
                               },
                               child: Container(
@@ -186,7 +188,7 @@ class _ProductPageState extends State<ProductPage> {
                                     color: Colors.black,
                                     borderRadius: BorderRadius.circular(13.0)),
                                 alignment: Alignment.center,
-                                child:const Text(
+                                child: const Text(
                                   'Add to Cart',
                                   style: TextStyle(
                                     color: Colors.white,

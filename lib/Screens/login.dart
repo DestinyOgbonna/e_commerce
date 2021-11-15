@@ -12,43 +12,33 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   String _loginEmail;
   String _loginPassword;
 
-
-  Future <String> _loginAccount() async{
-    try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword
-        (email: _loginEmail, password: _loginPassword);
+  Future<String> _loginAccount() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _loginEmail, password: _loginPassword);
       return null;
-    }
-    on FirebaseAuthException catch (e)
-    {
-
-      if (e . code == 'Weak password')
-      {
-        return'the password provided is too weak';
-      }
-      else if (e.code == 'Email already in use')
-      {
-        return'the account is already in use';
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'Weak password') {
+        return 'the password provided is too weak';
+      } else if (e.code == 'Email already in use') {
+        return 'the account is already in use';
       }
       return e.message;
-    }
-
-    catch (e)
-    {
+    } catch (e) {
       return e.toString();
     }
   }
 
   FocusNode _passwordFocusNode;
+
   //==================initializing the password focus node ===============
   @override
   void initState() {
     _passwordFocusNode = FocusNode();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -59,29 +49,27 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
+  bool _loginFormLoading = false;
 
-  bool _loginFormLoading =false;
+  void _loginForm() async {
+    setState(() {
+      _loginFormLoading = true;
+    });
 
-  void _loginForm () async{
-     setState(() {
-       _loginFormLoading = true;
-     });
+    String _loginAccountFeedBack = await _loginAccount();
+    if (_loginAccountFeedBack != null) {
+      _alertDialogBuilder(_loginAccountFeedBack);
 
-     String _loginAccountFeedBack = await _loginAccount();
-     if(_loginAccountFeedBack != null)
-       {
-         _alertDialogBuilder(_loginAccountFeedBack);
-
-         setState(() {
-           _loginFormLoading = false;
-         });
-       }
+      setState(() {
+        _loginFormLoading = false;
+      });
+    }
   }
 
   //=================== Building the Alert Dialog Start====================
-  Future<void> _alertDialogBuilder( String error) async {
+  Future<void> _alertDialogBuilder(String error) async {
     return showDialog(
-      //==========prevents closing the error when tapping any part of the screen
+        //==========prevents closing the error when tapping any part of the screen
         barrierDismissible: false,
         context: context,
         builder: (context) {
@@ -90,9 +78,10 @@ class _LoginState extends State<Login> {
             // ignore: avoid_unnecessary_containers
             content: Container(
               // adding the String *error* value to the text
-              child:  Text(error),
+              child: Text(error),
             ),
             actions: [
+              // ignore: deprecated_member_use
               FlatButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -103,6 +92,7 @@ class _LoginState extends State<Login> {
           );
         });
   }
+
   //=================== Building the Alert Dialog End====================
 
   @override
@@ -110,70 +100,71 @@ class _LoginState extends State<Login> {
     return Scaffold(
       // safearea to give a padding from the top and bottom of device screen
       body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 28.0),
-                child: Text(
-                  'Welcome User, \n  Login to your account',
-                  textAlign: TextAlign.center,
-                  style: Constant.boldHeading,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 28.0),
+                  child: Text(
+                    'Welcome User, \n  Login to your account',
+                    textAlign: TextAlign.center,
+                    style: Constant.boldHeading,
+                  ),
                 ),
-              ),
-              //custom button created in the widget folder
-              Column(
-                children: [
-              CustomInput(
-                    hintText: 'Email..',
-                    onChanged: (value){
-                      _loginEmail = value;
-                    },
+                const SizedBox(
+                  height: 200,
+                ),
+                //custom button created in the widget folder
+                Column(
+                  children: [
+                    CustomInput(
+                        hintText: 'Email..',
+                        onChanged: (value) {
+                          _loginEmail = value;
+                        },
+                        onSubmitted: (value) {
+                          _passwordFocusNode.requestFocus();
+                        },
+                        textInputAction: TextInputAction.next),
+                    CustomInput(
+                      onChanged: (value) {
+                        _loginPassword = value;
+                      },
+                      focusNode: _passwordFocusNode,
+                      isPasswordField: true,
+                      hintText: 'Password ..',
+                      onSubmitted: (value) {
+                        _loginForm();
+                      },
+                    ),
+                    CustomButton(
+                      text: 'Login',
+                      onPressed: () {
+                        _loginForm();
+                      },
+                      isLoading: _loginFormLoading,
+                    ),
+                  ],
+                ),
 
-                  onSubmitted: (value) {
-                    _passwordFocusNode.requestFocus();
+                //Create Account Button fix
+                CustomButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Register()));
                   },
-
-                  textInputAction: TextInputAction.next
-                  ),
-
-               CustomInput(
-                    onChanged:(value){
-                      _loginPassword = value;
-                    } ,
-                    focusNode: _passwordFocusNode,
-                    isPasswordField: true,
-                    hintText: 'Password ..',
-
-                 onSubmitted: (value){
-                      _loginForm();
-                 },
-                  ),
-
-
-                  CustomButton(
-                    text: 'Login',
-                    onPressed: () {
-                     _loginForm();
-                    },
-                    isLoading: _loginFormLoading,
-                  ),
-                ],
-              ),
-
-              //Create Account Button fix
-              CustomButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Register()));
-                },
-                text: 'Create New Account',
-                //setting the outline button to true. so to be transparent
-                outlineBtn: true,
-              ),
-            ],
+                  text: 'Create New Account',
+                  //setting the outline button to true. so to be transparent
+                  outlineBtn: true,
+                ),
+              ],
+            ),
           ),
         ),
       ),
